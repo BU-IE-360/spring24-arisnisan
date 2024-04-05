@@ -9,3 +9,5 @@ I am Aris and this is my page for the course IE360. My homeworks and my project 
 
 
 [R MARKDOWN](https://github.com/BU-IE-360/spring24-arisnisan/blob/6e98e48009deff64d4cccc7af1577583758e0c3a/hw1_360.Rmd)
+
+## Datas can be seen in markdown and html files, therefore I didnt add separately
