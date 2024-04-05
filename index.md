@@ -8,4 +8,4 @@ I am Aris and this is my page for the course IE360. My homeworks and my project 
 [Assignment Report PDF](https://github.com/BU-IE-360/spring24-arisnisan/blob/fef66038b556517109846edeaafc92bc5ceba041/IE%20360%20-%20Assignment%201%20Report.pdf)
 
 
-
+[R MARKDOWN](https://github.com/BU-IE-360/spring24-arisnisan/blob/6e98e48009deff64d4cccc7af1577583758e0c3a/hw1_360.Rmd)
