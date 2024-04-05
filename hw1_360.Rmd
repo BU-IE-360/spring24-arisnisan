@@ -1,0 +1,102 @@
+---
+title: "360HW1"
+author: "Aris"
+date: "2024-04-03"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+require(data.table)
+require(lubridate)
+require(forecast)
+require(skimr)
+require(repr)
+require(openxlsx) 
+require(ggplot2)
+require(data.table)
+require(skimr)
+require(GGally)
+require(ggcorrplot)
+require(forecast)
+```
+## Initization
+```{r}
+data_path = "C:\\Users\\Berke\\Desktop\\Aris\\EVDS.xlsx"
+data=read.xlsx(data_path)
+str(data)
+na.omit(data)
+head(data)
+```
+
+```{r}
+require(lubridate)
+data$Tarih <- ym(data$Tarih)
+data$issizlik <- as.numeric(data$issizlik)
+data$Tufe <- as.numeric(data$Tufe)
+data$Dolar <- as.numeric(data$Dolar)
+data$ticari_kredi_faiz <- as.numeric(data$ticari_kredi_faiz)
+str(data)
+```
+
+```{r}
+ggplot(data ,aes(x=Tarih,y=issizlik)) + geom_line()
+ggplot(data ,aes(x=Tarih,y=Tufe)) + geom_line()
+ggplot(data ,aes(x=Tarih,y=Dolar)) + geom_line()
+ggplot(data ,aes(x=Tarih,y=ticari_kredi_faiz)) + geom_line()
+```
+## Corelation
+
+```{r}
+require(GGally)
+ggpairs(data)
+```
+
+## Trend
+```{r}
+ggplot(data ,aes(x=Tarih,y=issizlik)) + geom_point()+geom_smooth(method='lm')
+```
+```{r}
+data <- as.data.table(data)
+data[,trnd:=1:.N]
+data[,ay:=as.character(month(Tarih,label=T))]
+head(data)
+```
+## Seasonality
+```{r}
+ggplot(data,aes(x=Tarih,y=issizlik)) +
+        geom_point() + geom_smooth(method=lm,linewidth=3) + facet_wrap(~ay)
+```
+## Model with onlt trend
+```{r}
+lm_base=lm(issizlik~trnd+ay,data)
+summary(lm_base)
+checkresiduals(lm_base$residuals)
+tmp=copy(data)
+tmp[,actual:=issizlik]
+tmp[,predicted_trend:=predict(lm_base,tmp)]
+tmp[,residual_trend:=actual-predicted_trend]
+#head(tmp)
+ggplot(tmp ,aes(x=Tarih)) +
+        geom_line(aes(y=actual,color='real')) + 
+        geom_line(aes(y=predicted_trend,color='predicted'))
+```
+
+## Model with variables
+```{r}
+lm_base=lm(issizlik~trnd+ay+data$Tufe+data$Dolar+data$ticari_kredi_faiz,data)
+summary(lm_base)
+checkresiduals(lm_base$residuals)
+tmp=copy(data)
+tmp[,actual:=issizlik]
+tmp[,predicted_trend:=predict(lm_base,tmp)]
+tmp[,residual_trend:=actual-predicted_trend]
+#head(tmp)
+ggplot(tmp ,aes(x=Tarih)) +
+        geom_line(aes(y=actual,color='real')) + 
+        geom_line(aes(y=predicted_trend,color='predicted'))
+```
